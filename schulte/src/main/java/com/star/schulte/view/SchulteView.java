@@ -44,6 +44,8 @@ public class SchulteView extends View {
     private int totalTap;
     private int correctTap;
 
+    private int downIndex = -1;
+
     public SchulteView(Context context) {
         this(context, null);
     }
@@ -141,6 +143,7 @@ public class SchulteView extends View {
             if (row >= 0 && row < game.getRow() && column >= 0 && column < game.getColumn()) {
                 totalTap++;
                 SchulteCell cell = game.getCells()[row][column];
+                downIndex = cell.getValue();
                 if (cell.getValue() == currentIndex + 1) {  //点击正确
                     correctTap++;
                     currentIndex++;
@@ -153,8 +156,15 @@ public class SchulteView extends View {
                         }
                     }
                 }
+            } else {
+                downIndex = -1;
             }
+        } else if (action == MotionEvent.ACTION_MOVE) {
+
+        } else {
+            downIndex = -1;
         }
+        invalidate();
         return true;
     }
 
@@ -203,6 +213,11 @@ public class SchulteView extends View {
                     SchulteCell cell = cells[i][j];
                     float x = offsetX + borderSize * (j + 1) + cellSize * j;
                     float y = offsetY + borderSize * (i + 1) + cellSize * i;
+                    if (cell.getValue() == downIndex) {
+                        cellPaint.setColor(config.getCellPressColor());
+                    } else {
+                        cellPaint.setColor(config.getCellColor());
+                    }
                     canvas.drawRect(x, y, x + cellSize, y + cellSize, cellPaint);
                     Paint.FontMetrics fontMetrics = cellFontPaint.getFontMetrics();
                     float fontOffset = (fontMetrics.top + fontMetrics.bottom) / 2; //基准线
