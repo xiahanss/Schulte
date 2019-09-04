@@ -30,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onProgress(int index) {
-                Log.e("p", index + "");
+            public void onProgress(int index, int maxIndex) {
+
             }
 
             @Override

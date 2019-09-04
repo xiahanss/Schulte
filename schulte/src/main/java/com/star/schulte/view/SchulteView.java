@@ -95,6 +95,14 @@ public class SchulteView extends View {
         update();
     }
 
+    public SchulteGame getGame() {
+        return game;
+    }
+
+    public SchulteConfig getConfig() {
+        return config;
+    }
+
     /**
      * 设置监听器
      */
@@ -131,6 +139,9 @@ public class SchulteView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (game == null || game.getCells() == null) {
+            return false;
+        }
         float x = event.getX();
         float y = event.getY();
         float halfLineSize = borderSize / 2;
@@ -148,7 +159,7 @@ public class SchulteView extends View {
                     correctTap++;
                     currentIndex++;
                     if (listener != null) {
-                        listener.onProgress(currentIndex);
+                        listener.onProgress(currentIndex + 1, game.getRow() * game.getColumn());
                     }
                     if (currentIndex == game.getRow() * game.getColumn()) {
                         if (listener != null) {
