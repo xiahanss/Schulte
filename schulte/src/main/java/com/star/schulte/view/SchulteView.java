@@ -217,13 +217,16 @@ public class SchulteView extends View {
         int row = game.getRow();
         int column = game.getColumn();
         SchulteCell[][] cells = game.getCells();
-        if (cells != null) {
-            canvas.drawRect(offsetX, offsetY, offsetX + width, offsetY + height, borderPaint);
-            for(int i=0; i<row; i++) {
-                for (int j=0; j<column; j++) {
-                    SchulteCell cell = cells[i][j];
-                    float x = offsetX + borderSize * (j + 1) + cellSize * j;
-                    float y = offsetY + borderSize * (i + 1) + cellSize * i;
+        canvas.drawRect(offsetX, offsetY, offsetX + width, offsetY + height, borderPaint);
+        for(int i=0; i<row; i++) {
+            for (int j=0; j<column; j++) {
+                SchulteCell cell = null;
+                if (cells != null) {
+                    cell = cells[i][j];
+                }
+                float x = offsetX + borderSize * (j + 1) + cellSize * j;
+                float y = offsetY + borderSize * (i + 1) + cellSize * i;
+                if (cell != null) {
                     if (cell.getValue() == downIndex) {
                         cellPaint.setColor(config.getCellPressColor());
                     } else {
@@ -234,6 +237,9 @@ public class SchulteView extends View {
                     float fontOffset = (fontMetrics.top + fontMetrics.bottom) / 2; //基准线
                     int baseLineY = (int) (y +  cellSize / 2 - fontOffset);
                     canvas.drawText(cell.getValue() + "", x + cellSize / 2, baseLineY, cellFontPaint);
+                } else {
+                    cellPaint.setColor(config.getCellColor());
+                    canvas.drawRect(x, y, x + cellSize, y + cellSize, cellPaint);
                 }
             }
         }
