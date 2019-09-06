@@ -236,13 +236,13 @@ public class SchulteView extends View {
                 }
                 float x = offsetX + borderSize * (j + 1) + cellSize * j;
                 float y = offsetY + borderSize * (i + 1) + cellSize * i;
+                rect.set(x, y, x + cellSize, y + cellSize);
                 if (cell != null) {
                     if (cell.getValue() == downIndex) {
                         cellPaint.setColor(config.getCellPressColor());
                     } else {
                         cellPaint.setColor(config.getCellColor());
                     }
-                    rect.set(x, y, x + cellSize, y + cellSize);
                     canvas.drawRoundRect(rect, radius, radius, cellPaint);
                     Paint.FontMetrics fontMetrics = cellFontPaint.getFontMetrics();
                     float fontOffset = (fontMetrics.top + fontMetrics.bottom) / 2; //基准线
@@ -250,7 +250,7 @@ public class SchulteView extends View {
                     canvas.drawText(cell.getValue() + "", x + cellSize / 2, baseLineY, cellFontPaint);
                 } else {
                     cellPaint.setColor(config.getCellColor());
-                    canvas.drawRect(x, y, x + cellSize, y + cellSize, cellPaint);
+                    canvas.drawRoundRect(rect, radius, radius, cellPaint);
                 }
             }
         }
