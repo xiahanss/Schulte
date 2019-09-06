@@ -13,6 +13,7 @@ public class SchulteConfig {
     private int fontColor = 0xFF666666;
     private float fontSize = 0.6F;
     private int countDownTime = 3000;
+    private float corner = 0.1F;
 
     public int getBorderColor() {
         return borderColor;
@@ -68,5 +69,13 @@ public class SchulteConfig {
 
     public void setCellPressColor(int cellPressColor) {
         this.cellPressColor = cellPressColor;
+    }
+
+    public float getCorner() {
+        return corner;
+    }
+
+    public void setCorner(float corner) {
+        this.corner = corner;
     }
 }

@@ -3,6 +3,7 @@ package com.star.schulte.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -37,6 +38,7 @@ public class SchulteView extends View {
     private float offsetY;
     private float width;
     private float height;
+    private RectF rect;
 
     private int currentIndex;
     private long startCountDownTime;
@@ -63,6 +65,7 @@ public class SchulteView extends View {
      * 初始化
      */
     private void init() {
+        rect = new RectF();
         defaultLineSize = getResources().getDisplayMetrics().density * 10 + 0.5F;
         borderPaint = new Paint();
         cellFontPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -213,10 +216,17 @@ public class SchulteView extends View {
     }
 
     @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        update();
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         int row = game.getRow();
         int column = game.getColumn();
         SchulteCell[][] cells = game.getCells();
+        float radius = cellSize * config.getCorner();
         canvas.drawRect(offsetX, offsetY, offsetX + width, offsetY + height, borderPaint);
         for(int i=0; i<row; i++) {
             for (int j=0; j<column; j++) {
@@ -232,7 +242,8 @@ public class SchulteView extends View {
                     } else {
                         cellPaint.setColor(config.getCellColor());
                     }
-                    canvas.drawRect(x, y, x + cellSize, y + cellSize, cellPaint);
+                    rect.set(x, y, x + cellSize, y + cellSize);
+                    canvas.drawRoundRect(rect, radius, radius, cellPaint);
                     Paint.FontMetrics fontMetrics = cellFontPaint.getFontMetrics();
                     float fontOffset = (fontMetrics.top + fontMetrics.bottom) / 2; //基准线
                     int baseLineY = (int) (y +  cellSize / 2 - fontOffset);
