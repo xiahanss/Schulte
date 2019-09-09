@@ -30,6 +30,11 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
+            public void onTapError() {
+
+            }
+
+            @Override
             public void onProgress(int index, int maxIndex) {
 
             }

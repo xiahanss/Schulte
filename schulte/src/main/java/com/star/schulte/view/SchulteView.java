@@ -45,6 +45,7 @@ public class SchulteView extends View {
 
     private int totalTap;
     private int correctTap;
+    private int errorTap;
 
     private int downIndex = -1;
 
@@ -102,8 +103,13 @@ public class SchulteView extends View {
         return game;
     }
 
+
     public SchulteConfig getConfig() {
         return config;
+    }
+
+    public int getErrorTap() {
+        return errorTap;
     }
 
     /**
@@ -117,6 +123,7 @@ public class SchulteView extends View {
         currentIndex = 0;
         totalTap = 0;
         correctTap = 0;
+        errorTap = 0;
         startCountDownTime = System.currentTimeMillis();
         game.setCells(null);
         update();
@@ -168,6 +175,11 @@ public class SchulteView extends View {
                         if (listener != null) {
                             listener.onFinish(totalTap, correctTap);
                         }
+                    }
+                } else {
+                    errorTap++;
+                    if (listener != null) {
+                        listener.onTapError();
                     }
                 }
             } else {
