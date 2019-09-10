@@ -48,6 +48,7 @@ public class SchulteView extends View {
     private int errorTap;
 
     private int downIndex = -1;
+    private int status = 0; //游戏状态：0.默认 1.倒计时 2.开始 3.结束
 
     public SchulteView(Context context) {
         this(context, null);
@@ -127,29 +128,50 @@ public class SchulteView extends View {
         startCountDownTime = System.currentTimeMillis();
         game.setCells(null);
         update();
+        status = 1;
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                long time = System.currentTimeMillis() - startCountDownTime;
-                if (time >= config.getCountDownTime()) {
-                    game.setCells(SchulteUtil.createCell(game.getRow(), game.getColumn()));
-                    update();
-                    if (listener != null) {
-                        listener.onStart();
+                if (status == 1) {
+                    long time = System.currentTimeMillis() - startCountDownTime;
+                    if (time >= config.getCountDownTime()) {
+                        startGame();
+                    } else {
+                        if (listener != null) {
+                            listener.onCountDown(time);
+                        }
+                        postDelayed(this, 32);
                     }
-                } else {
-                    if (listener != null) {
-                        listener.onCountDown(time);
-                    }
-                    postDelayed(this, 32);
                 }
             }
         }, 32);
     }
 
+    private void startGame() {
+        status = 2;
+        game.setCells(SchulteUtil.createCell(game.getRow(), game.getColumn()));
+        update();
+        if (listener != null) {
+            listener.onStart();
+        }
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (status == 1) {
+            startGame();
+            return true;
+        }
         if (game == null || game.getCells() == null) {
+            return false;
+        }
+        if (status == 3) {
+            downIndex = -1;
+            invalidate();
             return false;
         }
         float x = event.getX();
@@ -173,6 +195,7 @@ public class SchulteView extends View {
                     }
                     if (currentIndex == game.getRow() * game.getColumn()) {
                         if (listener != null) {
+                            status = 3;
                             listener.onFinish(totalTap, correctTap);
                         }
                     }
