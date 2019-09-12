@@ -68,7 +68,7 @@ public class SchulteView extends View {
      */
     private void init() {
         rect = new RectF();
-        defaultLineSize = getResources().getDisplayMetrics().density * 10 + 0.5F;
+        defaultLineSize = getResources().getDisplayMetrics().density * 40 + 0.5F;
         borderPaint = new Paint();
         cellFontPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         cellFontPaint.setTextAlign(Paint.Align.CENTER);
