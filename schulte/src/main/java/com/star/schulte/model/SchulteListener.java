@@ -10,7 +10,7 @@ public interface SchulteListener {
 
     void onStart();
 
-    void onTapError();
+    void onTapError(int index, int currentIndex);
 
     void onProgress(int index, int maxIndex);
 

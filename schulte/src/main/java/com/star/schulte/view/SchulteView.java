@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -187,7 +186,7 @@ public class SchulteView extends View {
                 totalTap++;
                 SchulteCell cell = game.getCells()[row][column];
                 downIndex = cell.getValue();
-                if (cell.getValue() == currentIndex + 1) {  //点击正确
+                if (downIndex == currentIndex + 1) {  //点击正确
                     correctTap++;
                     currentIndex++;
                     if (listener != null) {
@@ -202,7 +201,7 @@ public class SchulteView extends View {
                 } else {
                     errorTap++;
                     if (listener != null) {
-                        listener.onTapError();
+                        listener.onTapError(downIndex, currentIndex + 1);
                     }
                 }
             } else {

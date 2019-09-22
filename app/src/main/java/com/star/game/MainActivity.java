@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onTapError() {
+            public void onTapError(int index, int currentIndex) {
 
             }
 
