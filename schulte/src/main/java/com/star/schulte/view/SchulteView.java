@@ -8,7 +8,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.DecelerateInterpolator;
 
+import com.star.schulte.model.CellAnimation;
 import com.star.schulte.model.SchulteCell;
 import com.star.schulte.model.SchulteConfig;
 import com.star.schulte.model.SchulteGame;
@@ -49,6 +51,8 @@ public class SchulteView extends View {
     private int downIndex = -1;
     private int status = 0; //游戏状态：0.默认 1.倒计时 2.开始 3.结束
 
+    private CellAnimation globalAnimation;
+
     public SchulteView(Context context) {
         this(context, null);
     }
@@ -66,6 +70,8 @@ public class SchulteView extends View {
      * 初始化
      */
     private void init() {
+        globalAnimation = new CellAnimation(1000);
+
         rect = new RectF();
         defaultLineSize = getResources().getDisplayMetrics().density * 40 + 0.5F;
         borderPaint = new Paint();
@@ -126,6 +132,7 @@ public class SchulteView extends View {
         errorTap = 0;
         startCountDownTime = System.currentTimeMillis();
         game.setCells(null);
+        globalAnimation.start();
         update();
         status = 1;
         postDelayed(new Runnable() {
@@ -262,31 +269,54 @@ public class SchulteView extends View {
         SchulteCell[][] cells = game.getCells();
         float radius = cellSize * config.getCorner();
         canvas.drawRect(offsetX, offsetY, offsetX + width, offsetY + height, borderPaint);
-        for(int i=0; i<row; i++) {
-            for (int j=0; j<column; j++) {
-                SchulteCell cell = null;
-                if (cells != null) {
-                    cell = cells[i][j];
-                }
-                float x = offsetX + borderSize * (j + 1) + cellSize * j;
-                float y = offsetY + borderSize * (i + 1) + cellSize * i;
-                rect.set(x, y, x + cellSize, y + cellSize);
-                if (cell != null) {
-                    if (cell.getValue() == downIndex) {
-                        cellPaint.setColor(config.getCellPressColor());
-                    } else {
-                        cellPaint.setColor(config.getCellColor());
+        if (cells == null) {
+            float progress = globalAnimation.progress();
+            float eachProgress = 1F / (row + column);
+            cellPaint.setColor(config.getCellColor());
+            for (int i=0; i<row; i++) {
+                for (int j=0; j<column; j++) {
+                    float x = offsetX + borderSize * (j + 1) + cellSize * j;
+                    float y = offsetY + borderSize * (i + 1) + cellSize * i;
+                    int index = i + j;
+                    float start = index * eachProgress / 2;
+                    float cellProgress = (progress - start) / eachProgress / 4;
+                    if (cellProgress < 0) {
+                        cellProgress = 0;
                     }
-                    canvas.drawRoundRect(rect, radius, radius, cellPaint);
-                    Paint.FontMetrics fontMetrics = cellFontPaint.getFontMetrics();
-                    float fontOffset = (fontMetrics.top + fontMetrics.bottom) / 2; //基准线
-                    int baseLineY = (int) (y +  cellSize / 2 - fontOffset);
-                    canvas.drawText(cell.getValue() + "", x + cellSize / 2, baseLineY, cellFontPaint);
-                } else {
-                    cellPaint.setColor(config.getCellColor());
-                    canvas.drawRoundRect(rect, radius, radius, cellPaint);
+                    if (cellProgress > 1) {
+                        cellProgress = 1;
+                    }
+                    float offset = cellSize / 2 * (1 - cellProgress);
+                    rect.set(x + offset, y + offset,
+                            x + cellSize - offset,
+                            y + cellSize - offset);
+                    float r = radius * cellProgress;
+                    canvas.drawRoundRect(rect, r, r, cellPaint);
+                }
+            }
+            globalAnimation.invalidate(this);
+        } else {
+            for(int i=0; i<row; i++) {
+                for (int j=0; j<column; j++) {
+                    SchulteCell cell = cells[i][j];
+                    float x = offsetX + borderSize * (j + 1) + cellSize * j;
+                    float y = offsetY + borderSize * (i + 1) + cellSize * i;
+                    rect.set(x, y, x + cellSize, y + cellSize);
+                    if (cell != null) {
+                        if (cell.getValue() == downIndex) {
+                            cellPaint.setColor(config.getCellPressColor());
+                        } else {
+                            cellPaint.setColor(config.getCellColor());
+                        }
+                        canvas.drawRoundRect(rect, radius, radius, cellPaint);
+                        Paint.FontMetrics fontMetrics = cellFontPaint.getFontMetrics();
+                        float fontOffset = (fontMetrics.top + fontMetrics.bottom) / 2; //基准线
+                        int baseLineY = (int) (y +  cellSize / 2 - fontOffset);
+                        canvas.drawText(cell.getValue() + "", x + cellSize / 2, baseLineY, cellFontPaint);
+                    }
                 }
             }
         }
+
     }
 }
