@@ -14,6 +14,7 @@ public class SchulteConfig {
     private float fontSize = 0.6F;
     private int countDownTime = 3000;
     private float corner = 0.1F;
+    private boolean animation = true;
 
     public int getBorderColor() {
         return borderColor;
@@ -77,5 +78,13 @@ public class SchulteConfig {
 
     public void setCorner(float corner) {
         this.corner = corner;
+    }
+
+    public boolean isAnimation() {
+        return animation;
+    }
+
+    public void setAnimation(boolean animation) {
+        this.animation = animation;
     }
 }

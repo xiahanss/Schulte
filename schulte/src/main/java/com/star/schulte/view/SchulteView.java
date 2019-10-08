@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.DecelerateInterpolator;
 
 import com.star.schulte.model.CellAnimation;
 import com.star.schulte.model.SchulteCell;
@@ -52,7 +51,6 @@ public class SchulteView extends View {
     private int status = 0; //游戏状态：0.默认 1.倒计时 2.开始 3.结束
 
     //动画
-    private boolean animation = true;
     private CellAnimation globalAnimation;
 
     public SchulteView(Context context) {
@@ -107,10 +105,6 @@ public class SchulteView extends View {
         update();
     }
 
-    public void setAnimationEnable(boolean enable) {
-        this.animation = enable;
-    }
-
     public SchulteGame getGame() {
         return game;
     }
@@ -138,7 +132,7 @@ public class SchulteView extends View {
         errorTap = 0;
         startCountDownTime = System.currentTimeMillis();
         game.setCells(null);
-        if (animation) {
+        if (config.isAnimation()) {
             globalAnimation.start();
         }
         update();
@@ -279,7 +273,7 @@ public class SchulteView extends View {
         canvas.drawRect(offsetX, offsetY, offsetX + width, offsetY + height, borderPaint);
         if (cells == null) {
             float progress = 1;
-            if (animation) {
+            if (config.isAnimation()) {
                 progress = globalAnimation.progress();
             }
             float eachProgress = 1F / (row + column);
@@ -305,7 +299,7 @@ public class SchulteView extends View {
                     canvas.drawRoundRect(rect, r, r, cellPaint);
                 }
             }
-            if (animation) {
+            if (config.isAnimation()) {
                 globalAnimation.invalidate(this);
             }
         } else {
