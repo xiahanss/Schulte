@@ -51,6 +51,8 @@ public class SchulteView extends View {
     private int downIndex = -1;
     private int status = 0; //游戏状态：0.默认 1.倒计时 2.开始 3.结束
 
+    //动画
+    private boolean animation = true;
     private CellAnimation globalAnimation;
 
     public SchulteView(Context context) {
@@ -105,6 +107,10 @@ public class SchulteView extends View {
         update();
     }
 
+    public void setAnimationEnable(boolean enable) {
+        this.animation = enable;
+    }
+
     public SchulteGame getGame() {
         return game;
     }
@@ -132,7 +138,9 @@ public class SchulteView extends View {
         errorTap = 0;
         startCountDownTime = System.currentTimeMillis();
         game.setCells(null);
-        globalAnimation.start();
+        if (animation) {
+            globalAnimation.start();
+        }
         update();
         status = 1;
         postDelayed(new Runnable() {
@@ -270,7 +278,10 @@ public class SchulteView extends View {
         float radius = cellSize * config.getCorner();
         canvas.drawRect(offsetX, offsetY, offsetX + width, offsetY + height, borderPaint);
         if (cells == null) {
-            float progress = globalAnimation.progress();
+            float progress = 1;
+            if (animation) {
+                progress = globalAnimation.progress();
+            }
             float eachProgress = 1F / (row + column);
             cellPaint.setColor(config.getCellColor());
             for (int i=0; i<row; i++) {
@@ -294,7 +305,9 @@ public class SchulteView extends View {
                     canvas.drawRoundRect(rect, r, r, cellPaint);
                 }
             }
-            globalAnimation.invalidate(this);
+            if (animation) {
+                globalAnimation.invalidate(this);
+            }
         } else {
             for(int i=0; i<row; i++) {
                 for (int j=0; j<column; j++) {
