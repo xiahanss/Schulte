@@ -170,7 +170,7 @@ public class SchulteView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (event.getDeviceId() != 0) {
+        if (event.getDeviceId() == 0) {
             return false;
         }
         if (status == 1) {
