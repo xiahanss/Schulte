@@ -51,3 +51,13 @@ game.start();
 | corner | 0.1F |
 | countDownTime | 3000 |
 | animation | true |
+
+Don't forget update() after set config.
+
+#### Other Method
+```java
+game.getStatus();
+game.getTapTotal();
+game.getTapCorrect();
+game.getTapError();
+```
