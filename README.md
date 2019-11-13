@@ -3,7 +3,7 @@
 [![](https://jitpack.io/v/lannaican/schulte.svg)](https://jitpack.io/#lannaican/schulte)
 [![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16)
 
-Add the dependency/引用:
+#### Add the dependency/引用:
 
 ```java
 allprojects {
@@ -18,7 +18,7 @@ dependencies {
 }
 ```
 
-Create a game/创建游戏
+#### Create a game/创建游戏
 ```java
 SchulteGame game = new SchulteGame();
 game.setRow(5);
@@ -28,7 +28,7 @@ game.setListener(SchulteListener);
 schulteView.setGame(game);
 ```
 
-Update view/更新游戏界面
+#### Update view/更新游戏界面
 ```java
 schulteView.update();
 ```
@@ -38,7 +38,7 @@ Start Game/开始游戏
 game.start();
 ```
 
-SchulteConfig/配置
+#### SchulteConfig/配置
 
 | Prop Name | Default Value |
 | ----  | ---- |
