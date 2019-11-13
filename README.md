@@ -1,5 +1,7 @@
 # Schulte/舒尔特方块
 
+[![](https://jitpack.io/v/lannaican/schulte.svg)](https://jitpack.io/#lannaican/schulte)
+
 Add the dependency/引用:
 
 ```
