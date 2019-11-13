@@ -13,7 +13,7 @@ allprojects {
 }
 
 dependencies {
-    implementation 'com.github.lannaican:schulte:Tag'
+    implementation 'com.github.lannaican:schulte:1.0.17'
 }
 ```
 
