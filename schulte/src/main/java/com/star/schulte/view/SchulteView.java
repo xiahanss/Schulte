@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver;
 import com.star.schulte.bean.SchulteCell;
 import com.star.schulte.bean.SchulteConfig;
 import com.star.schulte.bean.SchulteGame;
+import com.star.schulte.bean.SchulteStatus;
 import com.star.schulte.listener.SchulteListener;
 import com.star.schulte.util.CellAnimation;
 
@@ -23,17 +24,17 @@ public class SchulteView extends View {
 
     private SchulteGame game;
 
-    //画笔
+    //Paint
     private Paint borderPaint;
     private Paint cellPaint;
     private Paint cellFontPaint;
 
-    //绘制属性
+    //Prop
     private float defaultLineSize;
     private float cellSize;
     private float borderSize;
 
-    //居中偏移
+    //offset
     private float offsetX;
     private float offsetY;
 
@@ -115,7 +116,7 @@ public class SchulteView extends View {
                 if (game == null) {
                     return;
                 }
-                if (game.getStatus() == 1) {
+                if (game.getStatus() == SchulteStatus.CountDown) {
                     long time = System.currentTimeMillis() - startCountDownTime;
                     if (time >= game.getConfig().getCountDownTime()) {
                         startGame();
@@ -151,12 +152,14 @@ public class SchulteView extends View {
         if (cells == null) {
             return true;
         }
-        int status = game.getStatus();
-        if (status == 1) {
+        SchulteStatus status = game.getStatus();
+        //倒计时状态点击直接开始
+        if (status == SchulteStatus.CountDown) {
             startGame();
             return true;
         }
-        if (status == 3) {
+        //游戏完成状态
+        if (status == SchulteStatus.Finished) {
             downIndex = -1;
             invalidate();
             return false;
@@ -179,12 +182,13 @@ public class SchulteView extends View {
                 if (downIndex == currentIndex + 1) {  //点击正确
                     game.setTapCorrect(game.getTapCorrect() + 1);
                     currentIndex++;
+                    game.setIndex(currentIndex);
                     if (listener != null) {
                         listener.onProgress(currentIndex + 1, game.getRow() * game.getColumn());
                     }
                     if (currentIndex == game.getRow() * game.getColumn()) {
                         if (listener != null) {
-                            game.setStatus(3);
+                            game.setStatus(SchulteStatus.Finished);
                             listener.onFinish(game.getTapTotal(), game.getTapCorrect());
                         }
                     }

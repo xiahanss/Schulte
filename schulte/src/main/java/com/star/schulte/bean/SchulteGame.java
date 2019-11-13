@@ -26,12 +26,8 @@ public class SchulteGame {
 
     /**
      * 游戏状态
-     * 0 = 默认
-     * 1 = 倒计时
-     * 2 = 开始
-     * 3 = 完成
      */
-    private int status;
+    private SchulteStatus status;
 
     /**
      * 当前序号
@@ -71,7 +67,7 @@ public class SchulteGame {
         tapTotal = 0;
         tapCorrect = 0;
         tapError = 0;
-        status = 1;
+        setStatus(SchulteStatus.Normal);
         setCells(null);
     }
 
@@ -79,7 +75,7 @@ public class SchulteGame {
      * 开始游戏
      */
     public void start() {
-        setStatus(2);
+        setStatus(SchulteStatus.Gaming);
         setCells(SchulteUtil.createCell(row, column));
         if (listener != null) {
             listener.onStart();
@@ -111,11 +107,11 @@ public class SchulteGame {
         this.cells = cells;
     }
 
-    public int getStatus() {
+    public SchulteStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(SchulteStatus status) {
         this.status = status;
     }
 

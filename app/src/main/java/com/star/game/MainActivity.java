@@ -2,6 +2,7 @@ package com.star.game;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,6 +18,34 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SchulteView schulteView = findViewById(R.id.schulteView);
         SchulteGame game = new SchulteGame();
+        game.setListener(new SchulteListener() {
+            @Override
+            public void onCountDown(long time) {
+                Toast.makeText(MainActivity.this, time + "", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onTapError(int index, int currentIndex) {
+
+            }
+
+            @Override
+            public void onProgress(int index, int maxIndex) {
+                Toast.makeText(MainActivity.this, index + "", Toast.LENGTH_SHORT).show();
+
+            }
+
+            @Override
+            public void onFinish(int totalTap, int correctTap) {
+                Toast.makeText(MainActivity.this, "Finished", Toast.LENGTH_SHORT).show();
+
+            }
+        });
         schulteView.setGame(game);
         schulteView.start();
     }
