@@ -33,7 +33,7 @@ schulteView.setGame(game);
 schulteView.update();
 ```
 
-Start Game/开始游戏
+#### Start Game/开始游戏
 ```java
 game.start();
 ```
@@ -51,3 +51,5 @@ game.start();
 | corner | 0.1F |
 | countDownTime | 3000 |
 | animation | true |
+
+#### License
