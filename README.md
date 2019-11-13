@@ -52,7 +52,7 @@ game.start();
 | countDownTime | 3000 |
 | animation | true |
 
-Don't forget update() after setting config.
+Don't forget update() after config changed.
 
 #### Other Method
 ```java
