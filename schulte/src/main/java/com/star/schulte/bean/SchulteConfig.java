@@ -1,19 +1,28 @@
-package com.star.schulte.model;
+package com.star.schulte.bean;
 
 /**
- * 说明：配置
+ * 说明：舒尔特配置
  * 时间：2019/9/4 9:20
  */
 public class SchulteConfig {
 
+    //边框色
     private int borderColor = 0xFFCCCCCC;
+    //边框大小
     private float borderSize = 0.2F;
+    //方块色
     private int cellColor = 0xFFFFFFFF;
+    //方块按下色
     private int cellPressColor = 0xFFF0F0F0;
+    //字体色
     private int fontColor = 0xFF666666;
+    //字体大小
     private float fontSize = 0.6F;
-    private int countDownTime = 3000;
+    //圆角
     private float corner = 0.1F;
+    //开始游戏倒计时时间
+    private int countDownTime = 3000;
+    //开启动画
     private boolean animation = true;
 
     public int getBorderColor() {

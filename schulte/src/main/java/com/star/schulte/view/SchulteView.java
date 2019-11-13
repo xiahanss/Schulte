@@ -9,12 +9,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
-import com.star.schulte.model.CellAnimation;
-import com.star.schulte.model.SchulteCell;
-import com.star.schulte.model.SchulteConfig;
-import com.star.schulte.model.SchulteGame;
-import com.star.schulte.model.SchulteListener;
-import com.star.schulte.model.SchulteUtil;
+import com.star.schulte.bean.SchulteCell;
+import com.star.schulte.bean.SchulteConfig;
+import com.star.schulte.bean.SchulteGame;
+import com.star.schulte.listener.SchulteListener;
+import com.star.schulte.util.CellAnimation;
 
 /**
  * 说明：舒尔特游戏界面
@@ -22,33 +21,29 @@ import com.star.schulte.model.SchulteUtil;
  */
 public class SchulteView extends View {
 
-    private SchulteConfig config;
     private SchulteGame game;
-    private SchulteListener listener;
 
+    //画笔
     private Paint borderPaint;
     private Paint cellPaint;
     private Paint cellFontPaint;
 
+    //绘制属性
     private float defaultLineSize;
     private float cellSize;
     private float borderSize;
 
+    //居中偏移
     private float offsetX;
     private float offsetY;
+
     private float width;
     private float height;
     private RectF rect;
 
-    private int currentIndex;
     private long startCountDownTime;
 
-    private int totalTap;
-    private int correctTap;
-    private int errorTap;
-
     private int downIndex = -1;
-    private int status = 0; //游戏状态：0.默认 1.倒计时 2.开始 3.结束
 
     //动画
     private CellAnimation globalAnimation;
@@ -71,15 +66,12 @@ public class SchulteView extends View {
      */
     private void init() {
         globalAnimation = new CellAnimation(1000);
-
         rect = new RectF();
         defaultLineSize = getResources().getDisplayMetrics().density * 40 + 0.5F;
         borderPaint = new Paint();
         cellFontPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         cellFontPaint.setTextAlign(Paint.Align.CENTER);
         cellPaint = new Paint();
-        config = new SchulteConfig();
-        game = new SchulteGame();
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -97,56 +89,39 @@ public class SchulteView extends View {
         update();
     }
 
-    /**
-     * 设置配置
-     */
-    public void setConfig(SchulteConfig config) {
-        this.config = config;
-        update();
-    }
-
     public SchulteGame getGame() {
         return game;
     }
 
-
-    public SchulteConfig getConfig() {
-        return config;
-    }
-
-    public int getErrorTap() {
-        return errorTap;
-    }
-
     /**
-     * 设置监听器
+     * 开始游戏
+     * 进入倒计时
      */
-    public void setListener(SchulteListener listener) {
-        this.listener = listener;
-    }
-
     public void start() {
-        currentIndex = 0;
-        totalTap = 0;
-        correctTap = 0;
-        errorTap = 0;
+        if (game == null) {
+            return;
+        }
         startCountDownTime = System.currentTimeMillis();
-        game.setCells(null);
+        game.startCountDown();
+
+        SchulteConfig config = game.getConfig();
         if (config.isAnimation()) {
             globalAnimation.start();
         }
         update();
-        status = 1;
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (status == 1) {
+                if (game == null) {
+                    return;
+                }
+                if (game.getStatus() == 1) {
                     long time = System.currentTimeMillis() - startCountDownTime;
-                    if (time >= config.getCountDownTime()) {
+                    if (time >= game.getConfig().getCountDownTime()) {
                         startGame();
                     } else {
-                        if (listener != null) {
-                            listener.onCountDown(time);
+                        if (game.getListener() != null) {
+                            game.getListener().onCountDown(time);
                         }
                         postDelayed(this, 32);
                     }
@@ -155,17 +130,13 @@ public class SchulteView extends View {
         }, 32);
     }
 
+    /**
+     * 倒计时结束
+     * 游戏进行中
+     */
     private void startGame() {
-        status = 2;
-        game.setCells(SchulteUtil.createCell(game.getRow(), game.getColumn()));
+        game.start();
         update();
-        if (listener != null) {
-            listener.onStart();
-        }
-    }
-
-    public int getStatus() {
-        return status;
     }
 
     @Override
@@ -173,12 +144,17 @@ public class SchulteView extends View {
         if (event.getDeviceId() == 0) {
             return false;
         }
+        if (game == null) {
+            return true;
+        }
+        SchulteCell[][] cells = game.getCells();
+        if (cells == null) {
+            return true;
+        }
+        int status = game.getStatus();
         if (status == 1) {
             startGame();
             return true;
-        }
-        if (game == null || game.getCells() == null) {
-            return false;
         }
         if (status == 3) {
             downIndex = -1;
@@ -195,23 +171,25 @@ public class SchulteView extends View {
         int action = event.getAction();
         if (action == MotionEvent.ACTION_DOWN) {
             if (row >= 0 && row < game.getRow() && column >= 0 && column < game.getColumn()) {
-                totalTap++;
+                game.setTapTotal(game.getTapTotal() + 1);
                 SchulteCell cell = game.getCells()[row][column];
                 downIndex = cell.getValue();
+                int currentIndex = game.getIndex();
+                SchulteListener listener = game.getListener();
                 if (downIndex == currentIndex + 1) {  //点击正确
-                    correctTap++;
+                    game.setTapCorrect(game.getTapCorrect() + 1);
                     currentIndex++;
                     if (listener != null) {
                         listener.onProgress(currentIndex + 1, game.getRow() * game.getColumn());
                     }
                     if (currentIndex == game.getRow() * game.getColumn()) {
                         if (listener != null) {
-                            status = 3;
-                            listener.onFinish(totalTap, correctTap);
+                            game.setStatus(3);
+                            listener.onFinish(game.getTapTotal(), game.getTapCorrect());
                         }
                     }
                 } else {
-                    errorTap++;
+                    game.setTapError(game.getTapError() + 1);
                     if (listener != null) {
                         listener.onTapError(downIndex, currentIndex + 1);
                     }
@@ -232,6 +210,10 @@ public class SchulteView extends View {
      * 更新视图
      */
     public void update() {
+        if (game == null) {
+            return;
+        }
+        SchulteConfig config = game.getConfig();
         borderPaint.setColor(config.getBorderColor());
         cellFontPaint.setColor(config.getFontColor());
         cellPaint.setColor(config.getCellColor());
@@ -269,6 +251,10 @@ public class SchulteView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        if (game == null) {
+            return;
+        }
+        SchulteConfig config = game.getConfig();
         int row = game.getRow();
         int column = game.getColumn();
         SchulteCell[][] cells = game.getCells();

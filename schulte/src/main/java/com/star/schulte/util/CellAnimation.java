@@ -1,11 +1,11 @@
-package com.star.schulte.model;
+package com.star.schulte.util;
 
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
 /**
- * 说明：
+ * 说明：动画控制器
  * 时间：2019/9/27 9:49
  */
 public class CellAnimation {
