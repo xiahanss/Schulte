@@ -51,5 +51,3 @@ game.start();
 | corner | 0.1F |
 | countDownTime | 3000 |
 | animation | true |
-
-#### License
