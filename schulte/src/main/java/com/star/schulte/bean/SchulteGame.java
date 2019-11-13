@@ -67,7 +67,7 @@ public class SchulteGame {
         tapTotal = 0;
         tapCorrect = 0;
         tapError = 0;
-        setStatus(SchulteStatus.Normal);
+        setStatus(SchulteStatus.CountDown);
         setCells(null);
     }
 
