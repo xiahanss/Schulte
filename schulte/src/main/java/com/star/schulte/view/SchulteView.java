@@ -148,10 +148,6 @@ public class SchulteView extends View {
         if (game == null) {
             return true;
         }
-        SchulteCell[][] cells = game.getCells();
-        if (cells == null) {
-            return true;
-        }
         SchulteStatus status = game.getStatus();
         //倒计时状态点击直接开始
         if (status == SchulteStatus.CountDown) {
@@ -163,6 +159,10 @@ public class SchulteView extends View {
             downIndex = -1;
             invalidate();
             return false;
+        }
+        SchulteCell[][] cells = game.getCells();
+        if (cells == null) {
+            return true;
         }
         float x = event.getX();
         float y = event.getY();
