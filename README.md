@@ -1,6 +1,7 @@
 # Schulte/舒尔特方块
 
 [![](https://jitpack.io/v/lannaican/schulte.svg)](https://jitpack.io/#lannaican/schulte)
+[![API](https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=16)
 
 Add the dependency/引用:
 
