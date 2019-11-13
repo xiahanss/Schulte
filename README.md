@@ -4,7 +4,7 @@
 
 Add the dependency/引用:
 
-```
+```java
 allprojects {
     repositories {
         ...
@@ -18,7 +18,7 @@ dependencies {
 ```
 
 Create a game/创建游戏
-```
+```java
 SchulteGame game = new SchulteGame();
 game.setRow(5);
 game.setColumn(5);
@@ -28,12 +28,12 @@ schulteView.setGame(game);
 ```
 
 Update view/更新游戏界面
-```
+```java
 schulteView.update();
 ```
 
 Start Game/开始游戏
-```
+```java
 game.start();
 ```
 
