@@ -66,7 +66,7 @@ public class SchulteView extends View {
      * 初始化
      */
     private void init() {
-        globalAnimation = new CellAnimation(1000);
+        globalAnimation = new CellAnimation(600);
         rect = new RectF();
         defaultLineSize = getResources().getDisplayMetrics().density * 40 + 0.5F;
         borderPaint = new Paint();
