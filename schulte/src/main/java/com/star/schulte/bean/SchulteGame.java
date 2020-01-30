@@ -30,6 +30,11 @@ public class SchulteGame {
     private SchulteStatus status;
 
     /**
+     * 盲玩
+     */
+    private boolean blind;
+
+    /**
      * 当前序号
      */
     private int index;
@@ -74,14 +79,15 @@ public class SchulteGame {
     /**
      * 开始游戏
      */
-    public void start() {
-        setStatus(SchulteStatus.Gaming);
+    public void start(boolean blind) {
+        if (!blind) {
+            setStatus(SchulteStatus.Gaming);
+        }
         setCells(SchulteUtil.createCell(row, column));
-        if (listener != null) {
+        if (!blind && listener != null) {
             listener.onStart();
         }
     }
-
 
     public int getRow() {
         return row;
@@ -161,5 +167,13 @@ public class SchulteGame {
 
     public void setConfig(SchulteConfig config) {
         this.config = config;
+    }
+
+    public boolean isBlind() {
+        return blind;
+    }
+
+    public void setBlind(boolean blind) {
+        this.blind = blind;
     }
 }

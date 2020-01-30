@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -45,6 +46,8 @@ public class SchulteView extends View {
     private long startCountDownTime;
 
     private int downIndex = -1;
+
+    private boolean blind;
 
     //动画
     private CellAnimation globalAnimation;
@@ -94,6 +97,11 @@ public class SchulteView extends View {
         return game;
     }
 
+    public void setBlind(boolean blind) {
+        this.blind = blind;
+        invalidate();
+    }
+
     /**
      * 开始游戏
      * 进入倒计时
@@ -102,7 +110,8 @@ public class SchulteView extends View {
         if (game == null) {
             return;
         }
-        startCountDownTime = System.currentTimeMillis();
+        blind = false;
+        startCountDownTime = SystemClock.elapsedRealtime();
         game.startCountDown();
 
         SchulteConfig config = game.getConfig();
@@ -110,34 +119,70 @@ public class SchulteView extends View {
             globalAnimation.start();
         }
         update();
-        postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (game == null) {
-                    return;
-                }
-                if (game.getStatus() == SchulteStatus.CountDown) {
-                    long time = System.currentTimeMillis() - startCountDownTime;
-                    if (time >= game.getConfig().getCountDownTime()) {
-                        startGame();
-                    } else {
-                        if (game.getListener() != null) {
-                            game.getListener().onCountDown(time);
+        if (!game.isBlind()) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (game == null) {
+                        return;
+                    }
+                    if (game.getStatus() == SchulteStatus.CountDown) {
+                        long time = SystemClock.elapsedRealtime() - startCountDownTime;
+                        long remainTime = game.getConfig().getCountDownTime() - time;
+                        if (remainTime <= 0) {
+                            startGame(false);
+                        } else {
+                            if (game.getListener() != null) {
+                                game.getListener().onCountDown(remainTime);
+                            }
+                            postDelayed(this, 32);
                         }
-                        postDelayed(this, 32);
                     }
                 }
-            }
-        }, 32);
+            }, 32);
+        } else {
+            startGame(true);
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (game == null) {
+                        return;
+                    }
+                    if (game.getStatus() == SchulteStatus.CountDown) {
+                        long time = SystemClock.elapsedRealtime() - startCountDownTime;
+                        long remainTime = game.getRow() * game.getColumn() * 1000 - time;
+                        if (remainTime <= 0) {
+                           callBlindStart();
+                        } else {
+                            if (game.getListener() != null) {
+                                game.getListener().onCountDown(remainTime);
+                            }
+                            postDelayed(this, 32);
+                        }
+                    }
+                }
+            }, 32);
+        }
+
     }
 
     /**
      * 倒计时结束
      * 游戏进行中
      */
-    private void startGame() {
-        game.start();
+    private void startGame(boolean blind) {
+        game.start(blind);
         update();
+    }
+
+    private void callBlindStart() {
+        game.setStatus(SchulteStatus.Gaming);
+        blind = true;
+        invalidate();
+        SchulteListener listener = game.getListener();
+        if (listener != null) {
+            listener.onStart();
+        }
     }
 
     @Override
@@ -151,8 +196,11 @@ public class SchulteView extends View {
         SchulteStatus status = game.getStatus();
         //倒计时状态点击直接开始
         if (status == SchulteStatus.CountDown) {
-            startGame();
-            return true;
+            if (!game.isBlind()) {
+                startGame(false);
+            } else {
+               callBlindStart();
+            }
         }
         //游戏完成状态
         if (status == SchulteStatus.Finished) {
@@ -187,6 +235,7 @@ public class SchulteView extends View {
                         listener.onProgress(currentIndex + 1, game.getRow() * game.getColumn());
                     }
                     if (currentIndex == game.getRow() * game.getColumn()) {
+                        blind = false;
                         if (listener != null) {
                             game.setStatus(SchulteStatus.Finished);
                             listener.onFinish(game.getTapTotal(), game.getTapCorrect());
@@ -264,9 +313,9 @@ public class SchulteView extends View {
         SchulteCell[][] cells = game.getCells();
         float radius = cellSize * config.getCorner();
         canvas.drawRect(offsetX, offsetY, offsetX + width, offsetY + height, borderPaint);
-        if (cells == null) {
+        if (cells == null || blind) {
             float progress = 1;
-            if (config.isAnimation()) {
+            if (!blind && config.isAnimation()) {
                 progress = globalAnimation.progress();
             }
             float eachProgress = 1F / (row + column);
@@ -289,6 +338,11 @@ public class SchulteView extends View {
                             x + cellSize - offset,
                             y + cellSize - offset);
                     float r = radius * cellProgress;
+                    if (cells != null && cells[i][j].getValue() == downIndex) {
+                        cellPaint.setColor(config.getCellPressColor());
+                    } else {
+                        cellPaint.setColor(config.getCellColor());
+                    }
                     canvas.drawRoundRect(rect, r, r, cellPaint);
                 }
             }

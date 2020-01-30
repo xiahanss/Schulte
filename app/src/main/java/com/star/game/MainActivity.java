@@ -2,6 +2,7 @@ package com.star.game;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,10 +19,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         SchulteView schulteView = findViewById(R.id.schulteView);
         SchulteGame game = new SchulteGame();
+        game.setRow(3);
+        game.setColumn(3);
+        game.setBlind(true);
         game.setListener(new SchulteListener() {
             @Override
             public void onCountDown(long time) {
-                Toast.makeText(MainActivity.this, time + "", Toast.LENGTH_SHORT).show();
+                ((TextView)findViewById(R.id.count_down_text)).setText(time + "");
             }
 
             @Override
