@@ -20,8 +20,6 @@ public class SchulteConfig {
     private float fontSize = 0.6F;
     //圆角
     private float corner = 0.1F;
-    //开始游戏倒计时时间
-    private int countDownTime = 3000;
     //开启动画
     private boolean animation = true;
 
@@ -63,14 +61,6 @@ public class SchulteConfig {
 
     public void setFontSize(float fontSize) {
         this.fontSize = fontSize;
-    }
-
-    public int getCountDownTime() {
-        return countDownTime;
-    }
-
-    public void setCountDownTime(int countDownTime) {
-        this.countDownTime = countDownTime;
     }
 
     public int getCellPressColor() {

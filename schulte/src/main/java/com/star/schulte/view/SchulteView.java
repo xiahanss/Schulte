@@ -119,28 +119,7 @@ public class SchulteView extends View {
             globalAnimation.start();
         }
         update();
-        if (!game.isBlind()) {
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (game == null) {
-                        return;
-                    }
-                    if (game.getStatus() == SchulteStatus.CountDown) {
-                        long time = SystemClock.elapsedRealtime() - startCountDownTime;
-                        long remainTime = game.getConfig().getCountDownTime() - time;
-                        if (remainTime <= 0) {
-                            startGame(false);
-                        } else {
-                            if (game.getListener() != null) {
-                                game.getListener().onCountDown(remainTime);
-                            }
-                            postDelayed(this, 32);
-                        }
-                    }
-                }
-            }, 32);
-        } else {
+        if (game.isBlind()) {
             startGame(true);
             postDelayed(new Runnable() {
                 @Override
@@ -198,6 +177,7 @@ public class SchulteView extends View {
         if (status == SchulteStatus.CountDown) {
             if (!game.isBlind()) {
                 startGame(false);
+                return true;
             } else {
                callBlindStart();
             }
