@@ -21,10 +21,11 @@ public class MainActivity extends AppCompatActivity {
         SchulteGame game = new SchulteGame();
         game.setRow(3);
         game.setColumn(3);
+        game.setBlind(true);
         game.setListener(new SchulteListener() {
             @Override
-            public void onCountDown(long time) {
-                ((TextView)findViewById(R.id.count_down_text)).setText(time + "");
+            public void onReady() {
+
             }
 
             @Override

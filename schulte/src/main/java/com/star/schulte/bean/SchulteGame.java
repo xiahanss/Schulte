@@ -67,24 +67,22 @@ public class SchulteGame {
     /**
      * 开始倒计时
      */
-    public void startCountDown() {
+    public void ready() {
         index = 0;
         tapTotal = 0;
         tapCorrect = 0;
         tapError = 0;
-        setStatus(SchulteStatus.CountDown);
+        setStatus(SchulteStatus.Ready);
         setCells(null);
     }
 
     /**
      * 开始游戏
      */
-    public void start(boolean blind) {
-        if (!blind) {
-            setStatus(SchulteStatus.Gaming);
-        }
+    public void start() {
+        setStatus(SchulteStatus.Gaming);
         setCells(SchulteUtil.createCell(row, column));
-        if (!blind && listener != null) {
+        if (listener != null) {
             listener.onStart();
         }
     }

@@ -43,8 +43,6 @@ public class SchulteView extends View {
     private float height;
     private RectF rect;
 
-    private long startCountDownTime;
-
     private int downIndex = -1;
 
     private boolean blind;
@@ -111,57 +109,28 @@ public class SchulteView extends View {
             return;
         }
         blind = false;
-        startCountDownTime = SystemClock.elapsedRealtime();
-        game.startCountDown();
+        game.ready();
 
         SchulteConfig config = game.getConfig();
         if (config.isAnimation()) {
             globalAnimation.start();
         }
         update();
-        if (game.isBlind()) {
-            startGame(true);
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (game == null) {
-                        return;
-                    }
-                    if (game.getStatus() == SchulteStatus.CountDown) {
-                        long time = SystemClock.elapsedRealtime() - startCountDownTime;
-                        long remainTime = game.getRow() * game.getColumn() * 1000 - time;
-                        if (remainTime <= 0) {
-                           callBlindStart();
-                        } else {
-                            if (game.getListener() != null) {
-                                game.getListener().onCountDown(remainTime);
-                            }
-                            postDelayed(this, 32);
-                        }
-                    }
-                }
-            }, 32);
+        if (game.isBlind()) {   //盲玩直接开始游戏
+            if (game.getListener() != null) {
+                game.getListener().onReady();
+            }
+            startGame();
         }
-
     }
 
     /**
      * 倒计时结束
      * 游戏进行中
      */
-    private void startGame(boolean blind) {
-        game.start(blind);
+    private void startGame() {
+        game.start();
         update();
-    }
-
-    private void callBlindStart() {
-        game.setStatus(SchulteStatus.Gaming);
-        blind = true;
-        invalidate();
-        SchulteListener listener = game.getListener();
-        if (listener != null) {
-            listener.onStart();
-        }
     }
 
     @Override
@@ -173,13 +142,15 @@ public class SchulteView extends View {
             return true;
         }
         SchulteStatus status = game.getStatus();
-        //倒计时状态点击直接开始
-        if (status == SchulteStatus.CountDown) {
-            if (!game.isBlind()) {
-                startGame(false);
-                return true;
-            } else {
-               callBlindStart();
+        //准备状态点击直接开始
+        if (status == SchulteStatus.Ready) {
+            startGame();
+            return true;
+        }
+        //隐藏方块
+        if (status == SchulteStatus.Gaming) {
+            if (game.isBlind()) {
+                blind = true;
             }
         }
         //游戏完成状态

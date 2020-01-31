@@ -7,9 +7,9 @@ package com.star.schulte.listener;
 public interface SchulteListener {
 
     /**
-     * 开始倒计时
+     * 准备开始
      */
-    void onCountDown(long time);
+    void onReady();
 
     /**
      * 开始游戏

@@ -6,7 +6,7 @@ package com.star.schulte.bean;
  */
 public enum SchulteStatus {
     Normal,
-    CountDown,
+    Ready,
     Gaming,
     Finished,
 }
