@@ -222,6 +222,9 @@ public class SchulteView extends View {
         cellFontPaint.setColor(config.getFontColor());
         cellPaint.setColor(config.getCellColor());
         borderSize = defaultLineSize * config.getBorderSize();
+        if (config.getBorderSize() > 0 && borderSize < 1) {
+            borderSize = 1;
+        }
         float viewWidth = getWidth();
         float viewHeight = getHeight();
         int row = game.getRow();
