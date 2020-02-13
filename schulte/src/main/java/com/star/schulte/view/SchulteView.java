@@ -125,6 +125,27 @@ public class SchulteView extends View {
     }
 
     /**
+     * 直接根据地图开始游戏，不需要点击
+     */
+    public void start(SchulteCell[][] cells) {
+        if (game == null) {
+            return;
+        }
+        blind = false;
+        game.ready();
+        game.setCells(cells);
+        SchulteConfig config = game.getConfig();
+        if (config.isAnimation()) {
+            globalAnimation.start();
+        }
+        update();
+        if (game.getListener() != null) {
+            game.getListener().onReady();
+        }
+        startGame();
+    }
+
+    /**
      * 倒计时结束
      * 游戏进行中
      */

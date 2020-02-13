@@ -23,7 +23,7 @@ public class SchulteUtil {
         }
         Random random = new Random();
         for (int i=cells.length - 1; i>0; i--) {
-            int index = random.nextInt(i);
+            int index = random.nextInt(i+1);
             SchulteCell temp = cells[i];
             cells[i] = cells[index];
             cells[index] = temp;
