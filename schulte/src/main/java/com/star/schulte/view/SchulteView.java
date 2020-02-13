@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -105,27 +104,11 @@ public class SchulteView extends View {
      * 进入倒计时
      */
     public void start() {
-        if (game == null) {
-            return;
-        }
-        blind = false;
-        game.ready();
-
-        SchulteConfig config = game.getConfig();
-        if (config.isAnimation()) {
-            globalAnimation.start();
-        }
-        update();
-        if (game.isBlind()) {   //盲玩直接开始游戏
-            if (game.getListener() != null) {
-                game.getListener().onReady();
-            }
-            startGame();
-        }
+        start(null);
     }
 
     /**
-     * 直接根据地图开始游戏，不需要点击
+     * 直接根据地图开始游戏，不需要点击开始
      */
     public void start(SchulteCell[][] cells) {
         if (game == null) {
@@ -133,24 +116,25 @@ public class SchulteView extends View {
         }
         blind = false;
         game.ready();
-        game.setCells(cells);
         SchulteConfig config = game.getConfig();
         if (config.isAnimation()) {
             globalAnimation.start();
         }
         update();
-        if (game.getListener() != null) {
-            game.getListener().onReady();
+        if (cells != null || game.isBlind()) {   //有地图或盲玩直接开始游戏
+            if (game.getListener() != null) {
+                game.getListener().onReady();
+            }
+            startGame(cells);
         }
-        startGame();
     }
 
     /**
      * 倒计时结束
      * 游戏进行中
      */
-    private void startGame() {
-        game.start();
+    private void startGame(SchulteCell[][] cells) {
+        game.start(cells);
         update();
     }
 
@@ -165,7 +149,7 @@ public class SchulteView extends View {
         SchulteStatus status = game.getStatus();
         //准备状态点击直接开始
         if (status == SchulteStatus.Ready) {
-            startGame();
+            startGame(null);
             return true;
         }
         //隐藏方块

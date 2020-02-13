@@ -79,9 +79,9 @@ public class SchulteGame {
     /**
      * 开始游戏
      */
-    public void start() {
+    public void start(SchulteCell[][] cells) {
         setStatus(SchulteStatus.Gaming);
-        setCells(SchulteUtil.createCell(row, column));
+        setCells(cells == null ? SchulteUtil.createCell(row, column) : cells);
         if (listener != null) {
             listener.onStart();
         }
