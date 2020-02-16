@@ -146,37 +146,37 @@ public class SchulteView extends View {
         if (game == null) {
             return true;
         }
-        SchulteStatus status = game.getStatus();
-        //准备状态点击直接开始
-        if (status == SchulteStatus.Ready) {
-            startGame(null);
-            return true;
-        }
-        //隐藏方块
-        if (status == SchulteStatus.Gaming) {
-            if (game.isBlind()) {
-                blind = true;
-            }
-        }
-        //游戏完成状态
-        if (status == SchulteStatus.Finished) {
-            downIndex = -1;
-            invalidate();
-            return false;
-        }
-        SchulteCell[][] cells = game.getCells();
-        if (cells == null) {
-            return true;
-        }
-        float x = event.getX();
-        float y = event.getY();
-        float halfLineSize = borderSize / 2;
-        float oneSize = cellSize + borderSize;
-        //触点方块
-        int column = (int)((x - offsetX - halfLineSize) / oneSize);
-        int row = (int)((y - offsetY - halfLineSize) / oneSize);
         int action = event.getAction();
         if (action == MotionEvent.ACTION_DOWN) {
+            SchulteStatus status = game.getStatus();
+            //准备状态点击直接开始
+            if (status == SchulteStatus.Ready) {
+                startGame(null);
+                return true;
+            }
+            //隐藏方块
+            if (status == SchulteStatus.Gaming) {
+                if (game.isBlind()) {
+                    blind = true;
+                }
+            }
+            //游戏完成状态
+            if (status == SchulteStatus.Finished) {
+                downIndex = -1;
+                invalidate();
+                return false;
+            }
+            SchulteCell[][] cells = game.getCells();
+            if (cells == null) {
+                return true;
+            }
+            float x = event.getX();
+            float y = event.getY();
+            float halfLineSize = borderSize / 2;
+            float oneSize = cellSize + borderSize;
+            //触点方块
+            int column = (int)((x - offsetX - halfLineSize) / oneSize);
+            int row = (int)((y - offsetY - halfLineSize) / oneSize);
             if (row >= 0 && row < game.getRow() && column >= 0 && column < game.getColumn()) {
                 game.setTapTotal(game.getTapTotal() + 1);
                 SchulteCell cell = game.getCells()[row][column];
