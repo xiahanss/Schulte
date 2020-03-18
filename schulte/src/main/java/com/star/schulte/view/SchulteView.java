@@ -121,7 +121,7 @@ public class SchulteView extends View {
             globalAnimation.start();
         }
         update();
-        if (cells != null || game.isBlind()) {   //有地图或盲玩直接开始游戏
+        if (cells != null) {   //有地图或盲玩直接开始游戏
             if (game.getListener() != null) {
                 game.getListener().onReady();
             }
