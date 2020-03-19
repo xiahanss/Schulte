@@ -21,7 +21,6 @@ public class MainActivity extends AppCompatActivity {
         SchulteGame game = new SchulteGame();
         game.setRow(3);
         game.setColumn(3);
-        game.setBlind(true);
         game.setListener(new SchulteListener() {
             @Override
             public void onReady() {

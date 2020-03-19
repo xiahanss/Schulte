@@ -146,8 +146,8 @@ public class SchulteView extends View {
         if (game == null) {
             return true;
         }
-        int action = event.getAction();
-        if (action == MotionEvent.ACTION_DOWN) {
+        int action = event.getActionMasked();
+        if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_POINTER_DOWN) {
             SchulteStatus status = game.getStatus();
             //准备状态点击直接开始
             if (status == SchulteStatus.Ready) {
