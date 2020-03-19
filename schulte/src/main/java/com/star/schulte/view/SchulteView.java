@@ -170,8 +170,9 @@ public class SchulteView extends View {
             if (cells == null) {
                 return true;
             }
-            float x = event.getX();
-            float y = event.getY();
+            int actionIndex = event.getActionIndex();
+            float x = event.getX(actionIndex);
+            float y = event.getY(actionIndex);
             float halfLineSize = borderSize / 2;
             float oneSize = cellSize + borderSize;
             //触点方块
