@@ -220,7 +220,7 @@ public class SchulteView extends View {
      * 更新视图
      */
     public void update() {
-        if (game == null) {
+        if (game == null || game.getConfig() == null) {
             return;
         }
         SchulteConfig config = game.getConfig();
@@ -259,14 +259,26 @@ public class SchulteView extends View {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        update();
+        try {
+            update();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if (game == null) {
+        if (game == null || game.getConfig() == null) {
             return;
         }
+        try {
+            drawGame(canvas);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void drawGame(Canvas canvas) {
         SchulteConfig config = game.getConfig();
         int row = game.getRow();
         int column = game.getColumn();
@@ -331,6 +343,5 @@ public class SchulteView extends View {
                 }
             }
         }
-
     }
 }
